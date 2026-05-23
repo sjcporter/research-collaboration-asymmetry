@@ -51,7 +51,7 @@ const topFor = (() => {
   <div class="card">
     <h2>Top fields of research</h2>
     <div class="for-list">
-      ${topFor.map(([f, n]) => `<div><b>${f}</b> &mdash; ${((n / totalCopubs) * 100).toFixed(1)}%</div>`).join("")}
+      ${topFor.map(([f, n]) => html`<div><b>${f}</b> — ${((n / totalCopubs) * 100).toFixed(1)}%</div>`)}
     </div>
   </div>
 </div>
