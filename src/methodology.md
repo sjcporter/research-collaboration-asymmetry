@@ -63,7 +63,7 @@ The data pipeline lives in a sibling analysis repo. The three SQL files that pro
 
 Builds `ds-consultancy-gbq.sjcporter_consultancy.collab_pairs`. Scans Dimensions publications for 2020–2024, takes the distinct affiliations per paper, and emits one row per directed (A, B) pair with co-publication count and fractional weight. ~2.65 GB scan, 21.8M output rows.
 
-```sql
+```sql run=false
 -- Build a directed institutional co-authorship pairs table.
 --
 -- Source:   dimensions-ai.data_analytics.publications
@@ -134,7 +134,7 @@ GROUP BY grid_a, grid_b;
 
 For a chosen focal institution (Bath = `grid.7340.0`), returns its top-N partners alongside the partner's rank-of-focal in their own list. Joins to GRID for name, country, type.
 
-```sql
+```sql run=false
 -- Reciprocal-rank view of a focal institution's top collaborators.
 --
 -- Pattern: for focal Ix, find Ix's top N collaborators (Iy_1, Iy_2, ...).
@@ -207,7 +207,7 @@ ORDER BY tp.focal_rank_of_partner;
 
 Re-scans publications 2020–2024 where the focal institution is an affiliation, counts how often each first-level Dimensions FoR appears for each co-affiliated partner, and keeps the modal FoR per partner. Single scan of publications (~3.6 GB).
 
-```sql
+```sql run=false
 -- Dominant first-level Field of Research per (focal, partner) collaboration.
 
 DECLARE focal STRING DEFAULT 'grid.7340.0';   -- University of Bath
