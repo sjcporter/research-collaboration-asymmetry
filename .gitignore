@@ -4,3 +4,4 @@ src/.observablehq/cache/
 .DS_Store
 .env
 *.log
+**/.observablehq/cache/
