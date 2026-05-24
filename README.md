@@ -33,3 +33,7 @@ Requires Node ≥ 20.6.
 ## Caveats
 
 See [methodology](https://sjcporter.github.io/research-collaboration-asymmetry/methodology) on the live site.
+
+## Build playbook
+
+`docs/build-playbook.md` walks through the techniques used to build this site end-to-end — BigQuery auth, the SQL strategy, Observable Framework + DuckDB-WASM patterns, common bugs, and GitHub Pages deployment. Useful if you want to replicate the recipe for another focal institution or another dataset.
