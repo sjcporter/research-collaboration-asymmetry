@@ -5,7 +5,11 @@ toc: false
 
 # Research collaboration asymmetry
 
-The University of Bath co-authored ~32,000 distinct publications with other research organisations between 2020 and 2024. For each of Bath's **5,461 partner institutions** we know two ranks: where the partner sits in *Bath's* collaboration ranking, and where Bath sits in the *partner's* ranking. The gap between the two is the **asymmetry** — it answers "for whom does this relationship matter more?".
+The University of Bath co-authored ~50,000 distinct publications with other research organisations between 2020 and 2026. For each of Bath's **6,436 partner institutions** we know two ranks: where the partner sits in *Bath's* collaboration ranking, and where Bath sits in the *partner's* ranking. The gap between the two is the **asymmetry** — it answers "for whom does this relationship matter more?".
+
+<div class="callout">
+  <b>Data window:</b> publications 2020 – mid-2026. <b>2026 figures are partial</b> — they cover only what Dimensions had indexed when the data was queried. Queried on <b>2026-05-24</b>.
+</div>
 
 ```js
 import {DuckDBClient} from "npm:@observablehq/duckdb";
@@ -187,4 +191,12 @@ display(Plot.plot({
 .card h2 { font-size: 0.85rem; text-transform: uppercase; color: var(--theme-foreground-muted); margin: 0 0 0.25rem 0; }
 .for-list div { font-size: 0.85rem; margin-bottom: 0.2rem; }
 .filter-summary { font-size: 0.9rem; color: var(--theme-foreground-muted); margin: 0.5rem 0; }
+.callout {
+  background: #fff8e6;
+  border-left: 4px solid #f0b400;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0 1.25rem;
+  font-size: 0.92rem;
+  border-radius: 4px;
+}
 </style>

@@ -5,7 +5,7 @@ toc: false
 
 # All Bath partners — sortable, filterable
 
-Every row is a partner institution that has co-authored at least one publication with Bath, 2020–2024. Sort any column. Use the filters at the top to narrow.
+Every row is a partner institution that has co-authored at least one publication with Bath, 2020 – mid-2026 (2026 partial). Sort any column. Use the filters at the top to narrow.
 
 ```js
 import {DuckDBClient} from "npm:@observablehq/duckdb";

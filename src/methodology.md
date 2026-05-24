@@ -9,7 +9,7 @@ toc: true
 
 All figures derive from the **Dimensions** scholarly database, queried via Google BigQuery in May 2026.
 
-The cohort is **publications co-authored by the University of Bath** (GRID `grid.7340.0`) between **2020 and 2024**. For each publication we take the distinct set of GRID-identified affiliations from the `authors[].grid_ids` arrays. Publications with more than 100 distinct affiliations (consortium / mega-collaboration papers) are excluded entirely to avoid swamping the signal.
+The cohort is **publications co-authored by the University of Bath** (GRID `grid.7340.0`) for **publication years 2020 through 2026 (inclusive)**. **2026 is partial** — it contains only those publications Dimensions had indexed at query time (this snapshot: **2026-05-24**). The earlier years (2020–2025) are complete. For each publication we take the distinct set of GRID-identified affiliations from the `authors[].grid_ids` arrays. Publications with more than 100 distinct affiliations (consortium / mega-collaboration papers) are excluded entirely to avoid swamping the signal.
 
 ## Pairs table
 
@@ -34,7 +34,7 @@ Both ranks use raw co-publication count (`n_copublications`) as the ordering key
 
 ## Dominant field of research
 
-`focal_partner_dominant_for.sql` re-scans publications 2020–2024 and, for each co-affiliated partner, counts how often each first-level Dimensions FoR (`category_for.first_level.full.name`) appears across the shared papers. The modal FoR is stored as `dominant_for`, along with its share of the pair's total FoR assignments. A publication may be assigned to multiple FoRs; each contributes to all of them.
+`focal_partner_dominant_for.sql` re-scans publications 2020 – mid-2026 and, for each co-affiliated partner, counts how often each first-level Dimensions FoR (`category_for.first_level.full.name`) appears across the shared papers. The modal FoR is stored as `dominant_for`, along with its share of the pair's total FoR assignments. A publication may be assigned to multiple FoRs; each contributes to all of them.
 
 Note: this is the FoR that *characterises the Bath × partner relationship*, not the partner's whole research portfolio. A general-purpose university whose Bath relationship is dominated by Biomedical work is not necessarily a Biomedical institution overall.
 
@@ -50,7 +50,7 @@ Many views filter to partners with at least N distinct collaborators (`partner_n
 
 - **Affiliation parsing.** Dimensions assigns GRIDs algorithmically from raw author affiliation strings. Missed or mis-attributed GRIDs are not corrected here.
 - **Mega-collaborations.** Papers with very large author lists (>100 distinct affiliations) are excluded, but the cap is arbitrary; consortium-heavy fields will see less of their actual collaboration captured.
-- **Mobility.** A researcher who moved between affiliations during 2020–2024 contributes to whatever GRID was attached to each paper at the time. Institutional ties are not de-duplicated.
+- **Mobility.** A researcher who moved between affiliations during 2020 – mid-2026 contributes to whatever GRID was attached to each paper at the time. Institutional ties are not de-duplicated.
 - **Directionality.** Co-authorship is symmetric by definition; only the *ranking* is asymmetric. We are not measuring who initiated a collaboration or who funded it.
 - **Recency.** Five years is a short window. Long-tail historical partners may not appear.
 
@@ -61,7 +61,7 @@ The data pipeline lives in a sibling analysis repo. The three SQL files that pro
 <details>
 <summary><b>1. <code>build_collab_pairs.sql</code></b> — global directed co-authorship pairs</summary>
 
-Builds `ds-consultancy-gbq.sjcporter_consultancy.collab_pairs`. Scans Dimensions publications for 2020–2024, takes the distinct affiliations per paper, and emits one row per directed (A, B) pair with co-publication count and fractional weight. ~2.65 GB scan, 21.8M output rows.
+Builds `ds-consultancy-gbq.sjcporter_consultancy.collab_pairs`. Scans Dimensions publications for 2020 through 2026, takes the distinct affiliations per paper, and emits one row per directed (A, B) pair with co-publication count and fractional weight. ~3.5 GB scan, 26.3M output rows.
 
 ```sql run=false
 -- Build a directed institutional co-authorship pairs table.
@@ -77,7 +77,8 @@ Builds `ds-consultancy-gbq.sjcporter_consultancy.collab_pairs`. Scans Dimensions
 -- because A's ranking is over its own pairs and B's ranking is over its own.
 --
 -- Cost control:
---   * Restricted to publications in 2020-2024 (5 calendar years).
+--   * Restricted to publications in 2020-2026 (2026 partial — Dimensions indexes papers
+--     continuously; the data is only as complete as the last index run before the query).
 --   * Distinct grid_ids per publication: a paper with 50 distinct affiliations contributes 50*49 = 2450 directed pairs,
 --     so mega-collaborations (CERN-style consortium papers) get fractional weighting to avoid drowning everything else.
 --   * Pubs with > 100 distinct affiliations are excluded entirely.
@@ -92,7 +93,7 @@ WITH pub_affiliations AS (
   FROM `dimensions-ai.data_analytics.publications` p,
        UNNEST(authors) AS a,
        UNNEST(a.grid_ids) AS grid_id
-  WHERE p.year BETWEEN 2020 AND 2024
+  WHERE p.year BETWEEN 2020 AND 2026
     AND grid_id IS NOT NULL
 ),
 pub_grid_count AS (
@@ -205,14 +206,14 @@ ORDER BY tp.focal_rank_of_partner;
 <details>
 <summary><b>3. <code>focal_partner_dominant_for.sql</code></b> — modal field of research per partnership</summary>
 
-Re-scans publications 2020–2024 where the focal institution is an affiliation, counts how often each first-level Dimensions FoR appears for each co-affiliated partner, and keeps the modal FoR per partner. Single scan of publications (~3.6 GB).
+Re-scans publications 2020 – mid-2026 where the focal institution is an affiliation, counts how often each first-level Dimensions FoR appears for each co-affiliated partner, and keeps the modal FoR per partner. Single scan of publications (~4.8 GB).
 
 ```sql run=false
 -- Dominant first-level Field of Research per (focal, partner) collaboration.
 
 DECLARE focal STRING DEFAULT 'grid.7340.0';   -- University of Bath
 DECLARE year_lo INT64 DEFAULT 2020;
-DECLARE year_hi INT64 DEFAULT 2024;
+DECLARE year_hi INT64 DEFAULT 2026;
 
 WITH focal_pubs AS (
   -- Pre-collapse each publication to two arrays: distinct GRIDs on the pub, distinct first-level FoR names.

@@ -5,7 +5,7 @@ toc: false
 
 # Collaborations by dominant field of research
 
-Each Bath–partner pair is tagged with the partner's modal first-level Field of Research (FoR) over the co-authored publications, 2020–2024. Note: this is the FoR that *characterises the partnership*, not the partner's full research portfolio.
+Each Bath–partner pair is tagged with the partner's modal first-level Field of Research (FoR) over the co-authored publications, 2020 – mid-2026 (2026 partial). Note: this is the FoR that *characterises the partnership*, not the partner's full research portfolio.
 
 ```js
 import {DuckDBClient} from "npm:@observablehq/duckdb";
